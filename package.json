@@ -1,0 +1,25 @@
+{
+  "name": "api-todo",
+  "version": "1.0.0",
+  "description": "Server Http pour Api Rest ToDo",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gass-Dev/API-ToDo.git"
+  },
+  "keywords": [
+    "server.http.api.rest.todo"
+  ],
+  "author": "Gass",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gass-Dev/API-ToDo/issues"
+  },
+  "homepage": "https://github.com/Gass-Dev/API-ToDo#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
