@@ -4,8 +4,8 @@ SMART TASK
 Stages of the project To Do List:
 
 Setting up the project
-1 - MCD (Modèle Conceptuel des Données)
-2 - Wireframes / Moodboard / Charte Graphique
+1 - MCD (Model Conceptual Data)
+2 - Wireframes / Moodboard / Graphic Chart
 
 Back-end
 3 - Setting up the server
@@ -15,4 +15,4 @@ Back-end
 7 - Middleware authentification (JWT)
 8 - Routing List - CRUD List
 
-The following on the WebSite ToDo directory.
+The rest on Repertory WebSite_ToDo.
