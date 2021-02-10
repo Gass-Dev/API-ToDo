@@ -1,7 +1,7 @@
 # API-ToDo
 SMART TASK
 
-Stages of the project:
+Stages of the project To Do List:
 
 Setting up the project
 1 - MCD (Modèle Conceptuel des Données)
