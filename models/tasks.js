@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "idUsers",
       });
     }
-  };
+  }
 
   Tasks.init({
     idusers: DataTypes.INTEGER,

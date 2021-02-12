@@ -3,6 +3,7 @@
         "gass",
         "idtasklists",
         "idusers",
+        "middlewares",
         "taskassign",
         "taskattachement",
         "taskdate",
