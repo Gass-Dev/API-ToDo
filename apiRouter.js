@@ -1,8 +1,11 @@
 // Imports
 const express = require('express');
 const apiRouter = express.Router();
+const bodyParser = require('body-parser');
 const usersCtrl = require('./routes/usersCtrl');
 const models = require('./models');
+
+apiRouter.use(bodyParser.json());
 
 // Router
 exports.router = (() => {
