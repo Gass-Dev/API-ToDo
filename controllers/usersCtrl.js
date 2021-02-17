@@ -1,81 +1,107 @@
+// Imports
+const models = require('../models');
 const bcrypt = require('bcrypt');
 const jwtUtils = require('../utils/jwt.utils');
-const models = require('../models');
+
+require("express-async-errors");
+
+const {
+    BadRequestError,
+    ConflictError,
+    UnAuthorizedError,
+    ServerError,
+    NotFoundError
+} = require("../helpers/errors");
+
+// Regex
+const USERNAME_REGEX = /^[a-zA-Z]{1,}$/;
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}$/;
 
 // Routes
-module.exports= {
-    signup: (req,res) => {
+module.exports = {
+    signup: async (req, res) => {
         // Params
-        let username = req.body.username;
-        let email = req.body.email;
-        let password = req.body.password;
+        const {
+            username,
+            email,
+            password
+        } = req.body;
 
-        if (username == null || email == null || password == null ) {
-            return res.status(400).json({error: "missing parameters"});
+        if (!USERNAME_REGEX.test(username) === "") {
+            throw new BadRequestError(
+                "Bas request",
+                "the username field is not fille in"
+            );
         }
 
-        // Verify pseudo length, mail, regex, password etc.
-        models.Users.findOne({
-            attributes: ['email'],
-            where: { email: email }
-        })
-        .then((userFound) => {
-            if (!userFound) {
-                bcrypt.hash(password, 5, (err,cryptedPassword) => {
-                    let newUser = models.Users.create({
-                        username: username,
-                        email: email,
-                        password: cryptedPassword
-                    })
-                    .then((newUser) => {
-                        return res.status(201).json({
-                            userId: newUser.id,
-                        })
-                    })
-                    .catch((err) => {
-                        return res.status(500).json({ 'error': 'cannot add user' });
-                    });
-                });
-            } else {
-                return res.status(409).json({ 'error': 'user already exist' });
-            }
-        })
-        .catch((err) => {
-            return res.status(500).json({ 'error': 'unable to verify user' });
+        if (!EMAIL_REGEX.test(email) === "") {
+            throw new BadRequestError("Bad request", "Email invalid");
+        }
+
+        if (!PASSWORD_REGEX.test(password) === "") {
+            throw new BadRequestError(
+                "Bad request",
+                "the invalid password: it must be 8 to 15 characters long and include at least 1 number, lowercase, uppercase"
+            );
+        }
+
+        const userFound = await models.User.findOne({
+            attributes: ["email"],
+            where: {
+                email
+            },
+        });
+
+        if (!userFound) {
+            const bcryptedPassword = await bcrypt.hash(password, 8);
+            const newUser = await models.User.creat({
+                username,
+                email,
+                password: bcryptedPassword
+            });
+            res.status(201).json(newUser);
+        } else {
+            throw new ConflictError("conflict error", "user already exists");
+        }
+    },
+
+    login: async (req, res) => {
+        const user = {
+            email: req.body.email,
+            password: req.body.password,
+        };
+
+        if (user.email === "" || user.password === "") {
+            throw new BadRequestError("Bad request", "please complete all fields");
+        }
+
+        const match = await models.User.findOne({
+            where: {
+                email: user.email,
+            },
+        });
+
+        if (!match) {
+            throw new UnAuthorizedError(
+                "UnAuthorized access",
+                "this mail does not exist"
+            );
+        }
+
+        const resBcrypt = await bcrypt.compare(user.password, match.password);
+        if (!resBcrypt) {
+            throw new UnAuthorizedError("UnAuthorized access", "password invalid");
+        }
+        res.status(200).json({
+            token: jwtUtils.generateTokenForUser(match),
+            user: {
+                username: match.username,
+                email: match.email,
+                id: match.id,
+            },
         });
     },
 
-    login: (req,res) => {
-        // Params
-        let email = req.body.email;
-        let password = req.body.password;
-        
-        if (email == null || password == null ) {
-            return res.status(400).json({ error: 'missing parameters' });
-        }
-        // Verify pseudo length, mail, regex, password etc.
-        models.Users.findOne({
-            where: { email: email }
-        })
-        .then((userFound) => {
-            if (userFound) {
-                const json = JSON.parse(JSON.stringify(userFound))
-                bcrypt.compare(password, json.password, (errBycrypt, resBycrypt) => {
-                    if(resBycrypt) {
-                        return res.status(200).json({
-                            'userId': json.id,
-                            'token': jwtUtils.generateTokenForUser(json)
-                        });
-                    } else {
-                        return res.status(403).json({ 'error': 'invalid password' });
-                    }
-                });
-            } else {
-                return res.status(404).json({ 'error': 'user not exist in DB'});
-            }
-        })
-        .catch((err) => {
-            return res.status(500).json({ 'error': err });
-        });
-    }
+
 };

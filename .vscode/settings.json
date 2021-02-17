@@ -1,9 +1,16 @@
 {
     "cSpell.words": [
+        "bad",
+        "entity",
+        "error",
+        "found",
         "gass",
         "idtasklists",
         "idusers",
         "middlewares",
+        "not",
+        "requeste",
+        "ressource",
         "taskassign",
         "taskattachement",
         "taskdate",
@@ -12,6 +19,7 @@
         "taskname",
         "taskscheduling",
         "tasktag",
-        "tasktitle"
+        "tasktitle",
+        "unprocessable"
     ]
 }
