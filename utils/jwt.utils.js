@@ -45,7 +45,7 @@ authenticateJWT: (req, res, next) => {
             }
             req.user = user;
             next();
-            });
+        });
     } else {
         throw new BadRequestError(
             'Bad request',

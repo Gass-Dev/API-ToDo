@@ -9,8 +9,8 @@ const {
     BadRequestError,
     ConflictError,
     UnAuthorizedError,
-    ServerError,
-    NotFoundError
+    // ServerError,
+    // NotFoundError
 } = require("../helpers/errors");
 
 // Regex
@@ -20,6 +20,11 @@ const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}$/;
 
 // Routes
 module.exports = {
+    getUserMe: async (req, res) => {
+        let user = await models.User.findByPk(req.user.userId);
+        res.status(200).json(user);
+    },
+
     signup: async (req, res) => {
         // Params
         const {
