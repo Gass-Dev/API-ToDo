@@ -2,18 +2,18 @@
 const express = require('express');
 const apiRouter = express.Router();
 const bodyParser = require('body-parser');
-const usersCtrl = require('./routes/usersCtrl');
-const models = require('./models');
+const usersCtrl = require('./controllers/usersCtrl');
 
 apiRouter.use(bodyParser.json());
 
 // Router
-exports.router = (() => {
-    // Users routes gets
 
-    // Users routes posts
-    apiRouter.post('/users/login', usersCtrl.login);
-    apiRouter.post('/users/signup', usersCtrl.signup);
+// Users routes 
+apiRouter.post('/login', usersCtrl.login);
+apiRouter.post('/signup', usersCtrl.signup);
 
-    return apiRouter;
-})();
+// Task routes
+
+// ListTask routes
+
+module.exports = apiRouter;
